@@ -14,13 +14,15 @@ Tested with Ansible 1.9.4
 
 Role Variables
 --------------
-
-lustre_lnet_networks (default: none) - what to put to /etc/modprobe.d/lustre.conf
-lustre_fstab_mount   (default: none) - fstab line 
-lustre_packages:     (default: none)
+```
+lustre_lnet_networks: (default: none) -  what to put to /etc/modprobe.d/lustre.conf
+lustre_fstab_mount:   (default: none) - fstab line 
+lustre_packages:      (default: none)
   - <package>
-lustre_network_devices: (default none) - what (IB?) network devices should be brought up to make lustre work
+
+lustre_network_devices: (default none) - which network devices should be brought up to make lustre work
   - <network device>
+```
 
 Dependencies
 ------------
