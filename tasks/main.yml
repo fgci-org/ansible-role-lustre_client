@@ -1,7 +1,5 @@
 ---
-# tasks file for roles/ansible-role-lustre_client
-
-# actual configuration for NSS and PAM should be in another module to allow flexibility with other authentication methods
+# tasks file for ansible-role-lustre_client
 
 - include: redhat.yml
   when: lustre_client_enabled and ansible_os_family == "RedHat"
