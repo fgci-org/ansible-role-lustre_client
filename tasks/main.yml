@@ -1,29 +1,5 @@
 ---
 # tasks file for ansible-role-lustre_client
 
-# here rpms's can be defined as a local file
-- name: install lustre rpms (can be defined as a local file)
-  yum: name="{{ item }}" state=present
-  with_items: lustre_packages
-
-- name: Lustre modprobe.d confings
-  template: src=lustre.conf.j2 dest=/etc/modprobe.d/lustre.conf
-            owner=root group=root mode=644
-
-- name: Add/modify lustre entry on /etc/fstab
-  lineinfile: dest=/etc/fstab regexp="^.*\b(lustre)\b.*$" line="{{ lustre_fstab_mount }}" state=present
-
-- name: create lustre mount directory
-  file: "path={{ lustre_mount_dir }} state=directory mode=0750 owner=root group=root"
-
-- name: check lustre mount
-  command: grep -qs "{{ lustre_mount_dir }}" /proc/mounts
-  ignore_errors: yes
-  register: lustre_status
-
-- name: Bring up lustre network and mounts
-  command: ifup {{ item }}
-  with_items: lustre_network_devices
-  when: lustre_status.rc != 0
-  notify: run_lustre_mount
-
+- include: redhat.yml
+  when: lustre_client_enabled and ansible_os_family == "RedHat"
