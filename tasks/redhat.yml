@@ -8,7 +8,7 @@
 
 - name: Lustre modprobe.d confings
   template: src=lustre.conf.j2 dest=/etc/modprobe.d/lustre.conf
-            owner=root group=root mode=644
+            owner=root group=root mode=0644
 
 - name: Add/modify lustre entry on /etc/fstab
   lineinfile: dest=/etc/fstab regexp="^.*\b(lustre)\b.*$" line="{{ lustre_fstab_mount }}" state=present
