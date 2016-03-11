@@ -23,6 +23,7 @@ lustre_packages:      (default: none)
 lustre_network_devices: (default none) - which network devices should be brought up to make lustre work
   - <network device>
 ```
+lustre_dir_mode: (default 0755) - mode for mount directory
 
 Dependencies
 ------------

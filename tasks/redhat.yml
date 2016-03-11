@@ -14,7 +14,7 @@
   lineinfile: dest=/etc/fstab regexp="^.*\b(lustre)\b.*$" line="{{ lustre_fstab_mount }}" state=present
 
 - name: create lustre mount directory
-  file: "path={{ lustre_mount_dir }} state=directory mode=0750 owner=root group=root"
+  file: "path={{ lustre_mount_dir }} state=directory mode={{ lustre_dir_mode }} owner=root group=root"
 
 - name: check lustre mount
   command: grep -qs "{{ lustre_mount_dir }}" /proc/mounts
