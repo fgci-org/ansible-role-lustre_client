@@ -22,7 +22,7 @@
   register: lustre_status
 
 - name: Bring up lustre network and mounts
-  command: ifup {{ item }}
+  command: /usr/sbin/ifup {{ item }}
   with_items: lustre_network_devices
   when: lustre_status.rc != 0
   notify: run_lustre_mount
