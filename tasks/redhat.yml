@@ -10,8 +10,13 @@
   template: src=lustre.conf.j2 dest=/etc/modprobe.d/lustre.conf
             owner=root group=root mode=0644
 
+- name: Test for line in fstab
+  shell: grep " lustre " /etc/fstab
+  register: test_grep
+
 - name: Add/modify lustre entry on /etc/fstab
   lineinfile: dest=/etc/fstab regexp="^.*\b(lustre)\b.*$" line="{{ lustre_fstab_mount }}" state=present
+  when: test_grep.stdout != ""
 
 - name: create lustre mount directory
   file: "path={{ lustre_mount_dir }} state=directory mode={{ lustre_dir_mode }} owner=root group=root"
