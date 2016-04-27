@@ -12,11 +12,12 @@
 
 - name: Test for line in fstab
   shell: grep " lustre " /etc/fstab
-  register: test_grep
+  register: reg_lustre_test_grep
+  always_run: True
 
 - name: Add/modify lustre entry on /etc/fstab
   lineinfile: dest=/etc/fstab regexp="^.*\b(lustre)\b.*$" line="{{ lustre_fstab_mount }}" state=present
-  when: test_grep.stdout != ""
+  when: reg_lustre_test_grep.stdout != ""
 
 - name: create lustre mount directory
   file: "path={{ lustre_mount_dir }} state=directory mode={{ lustre_dir_mode }} owner=root group=root"
