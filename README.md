@@ -9,14 +9,16 @@ Requirements
 ------------
 
 Assumes you will build/obtain the module rpm's and place those to the given location beforehand.
-Tested with Ansible 1.9.4
+Tested with Ansible 1.9.4 and 2.0.2.
 
 
 Role Variables
 --------------
 ```
 lustre_lnet_networks: (default: none) -  what to put to /etc/modprobe.d/lustre.conf
-lustre_fstab_mount:   (default: none) - fstab line 
+lustre_mount_opts:    (default: _netdev,noatime,localflock,noauto) - Lustre mount options
+lustre_mount_src:     (default: none) - Lustre mount source
+lustre_mount_dir:     (default: none) - Path where Lustre will be mounted
 lustre_packages:      (default: none)
   - <package>
 
@@ -49,4 +51,4 @@ Version 2.0, January 2004
 Author Information
 ------------------
 https://github.com/mhakala
-
+https://github.com/jabl
