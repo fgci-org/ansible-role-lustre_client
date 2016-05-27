@@ -10,21 +10,25 @@
   template: src=lustre.conf.j2 dest=/etc/modprobe.d/lustre.conf
             owner=root group=root mode=0644
 
-- name: Add/modify lustre entry on /etc/fstab
-  lineinfile: dest=/etc/fstab regexp=" lustre " line="{{ lustre_fstab_mount }}" state=present
-  when: reg_lustre_test_grep.stdout != ""
+- name: Check Lustre networks
+  command: /usr/sbin/ip link show {{ item }}
+  with_items: "{{ lustre_network_devices }}"
+  register: lustre_networks
+  failed_when: False
+  changed_when: lustre_networks.rc != 0
+
+- name: Bring up Lustre networks if down
+  command: /usr/sbin/ifup {{ item[1] }}
+  when: item[0].rc != 0
+  with_nested:
+    - "{{ lustre_networks.results }}"
+    - "{{ lustre_network_devices }}"
+
+- name: Load Lustre modules
+  modprobe: name=lustre
 
 - name: create lustre mount directory
   file: "path={{ lustre_mount_dir }} state=directory mode={{ lustre_dir_mode }} owner=root group=root"
 
-- name: check lustre mount
-  command: grep -qs "{{ lustre_mount_dir }}" /proc/mounts
-  ignore_errors: yes
-  register: lustre_status
-
-- name: Bring up lustre network and mounts
-  command: /usr/sbin/ifup {{ item }}
-  with_items: "{{ lustre_network_devices }}"
-  when: lustre_status.rc != 0
-  notify: run_lustre_mount
-
+- name: Add Lustre entry to /etc/fstab, make sure it is mounted
+  mount: fstype=lustre name="{{ lustre_mount_dir }}" opts="{{ lustre_mount_opts }}" src="{{ lustre_mount_src }}" state=mounted
