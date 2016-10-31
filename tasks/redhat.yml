@@ -16,6 +16,7 @@
   register: lustre_networks
   failed_when: False
   changed_when: lustre_networks.rc != 0
+  when: lustre_network_devices is defined
 
 - name: Bring up Lustre networks if down
   command: /usr/sbin/ifup {{ item[1] }}
