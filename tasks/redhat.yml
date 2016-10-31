@@ -19,7 +19,7 @@
 
 - name: Bring up Lustre networks if down
   command: /usr/sbin/ifup {{ item[1] }}
-  when: item[0].rc != 0
+  when: item[0].rc != 0 and (lustre_networks is defined and lustre_network_devices is defined)
   with_nested:
     - "{{ lustre_networks.results }}"
     - "{{ lustre_network_devices }}"
