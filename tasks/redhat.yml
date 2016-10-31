@@ -12,7 +12,7 @@
 
 - name: Check Lustre networks
   command: /usr/sbin/ip link show {{ item }}
-  with_items: "{{ lustre_network_devices }}"
+  with_items: "{{ lustre_network_devices|default([]) }}"
   register: lustre_networks
   failed_when: False
   changed_when: lustre_networks.rc != 0
@@ -22,7 +22,7 @@
   when: item[0].rc != 0
   with_nested:
     - "{{ lustre_networks.results }}"
-    - "{{ lustre_network_devices }}"
+    - "{{ lustre_network_devices|default([]) }}"
 
 - name: Load Lustre modules
   modprobe: name=lustre
