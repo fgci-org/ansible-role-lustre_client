@@ -1,5 +1,5 @@
 ---
 # tasks file for ansible-role-lustre_client
 
-- include: redhat.yml
+- include_tasks: redhat.yml
   when: lustre_client_enabled and ansible_os_family == "RedHat"
