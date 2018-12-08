@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# Warewulf doesn't support IB partitions (or eth VLAN's),
+# https://github.com/warewulf/warewulf3/issues/166
+# So create the ifcfg- files and bring up the Lustre networks here
+# instead, and launch from rc.local.
+
+{% for dev in lustre_network_devices %}
+
+parent={{ dev.split('.')[0] }}
+
+parent_ip=$(ip a show dev ${parent} scope global | awk '{if ($1 == "inet") {print $2}}' | awk -F/ '{print $1}')
+
+# Device IP
+dip=$(echo $parent_ip | awk 'BEGIN {FS="."; OFS="."} {print $1, $2 + {{ loop.index }}, $3, $4}')
+pkey="0x{{ dev.split('.')[1] }}"
+
+cat <<EOF > /etc/sysconfig/network-scripts/ifcfg-{{ dev }}
+DEVICE={{ dev }}
+NAME={{ dev }}
+PHYSDEV=${parent}
+BOOTPROTO=none
+TYPE=InfiniBand
+IPADDR=${dip}
+ONBOOT=yes
+NETMASK=255.255.0.0
+PKEY=yes
+PKEY_ID=${pkey}
+IPV6INIT=no
+MTU=65520
+CONNECTED_MODE=yes
+NM_CONTROLLED=no
+EOF
+
+echo ${pkey} > /sys/class/net/${parent}/create_child
+ifup {{ dev }}
+
+{% endfor %}
+
+# Separate loop here to allow parallel initialization of devices
+{% for dev in lustre_network_devices %}
+while ! dmesg | grep '{{ dev }}: link becomes ready'
+do
+    sleep 1
+done
+{% endfor %}
+
+modprobe lustre
+mount /scratch

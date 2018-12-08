@@ -3,3 +3,6 @@
 
 - include_tasks: redhat.yml
   when: lustre_client_enabled and ansible_os_family == "RedHat"
+
+- include_tasks: ohpc.yml
+  when: lustre_client_enabled and ansible_connection == 'chroot'

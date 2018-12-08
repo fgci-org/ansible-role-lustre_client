@@ -1,0 +1,20 @@
+---
+# tasks file for ansible-role-lustre_client
+
+- name: Script for creating and bringing up IB partition ipoib devices
+  template:
+    src: ifcfg-ibpart-create.sh.j2
+    dest: /usr/local/sbin/ifcfg-ibpart-create.sh
+    mode: 0744
+    owner: root
+    group: root
+
+- name: Run the script from rc.local
+  lineinfile:
+    path: /etc/rc.d/rc.local
+    line: '/usr/local/sbin/ifcfg-ibpart-create.sh'
+
+- name: Make sure rc.local is executable
+  file:
+    path: /etc/rc.d/rc.local
+    mode: 0744
