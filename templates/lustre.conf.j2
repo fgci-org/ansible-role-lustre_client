@@ -1,3 +1,4 @@
 options lnet networks="{{ lustre_lnet_networks }}"
-options ko2iblnd peer_credits=16 credits=2048 ntx=2048
-
+{% if modprobe_options_ko2iblnd is defined %}
+options ko2iblnd {{ modprobe_options_ko2iblnd }}
+{% endif %}
