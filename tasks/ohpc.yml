@@ -8,11 +8,35 @@
     mode: 0744
     owner: root
     group: root
+  when: lustre_network_ib_partitions|bool
 
 - name: Run the script from rc.local
   lineinfile:
     path: /etc/rc.d/rc.local
     line: '/usr/local/sbin/ifcfg-ibpart-create.sh'
+  when: lustre_network_ib_partitions|bool
+
+- name: Add extra IPs for Lnet multi-rail
+  copy:
+    src: add-ips.awk
+    dest: /usr/local/sbin/add-ips.awk
+    mode: 0644
+    owner: root
+    group: root
+  when: lustre_lnet_multi_rail|bool
+
+- name: Run multi-rail setup from rc.local
+  blockinfile:
+    path: /etc/rc.d/rc.local
+    block: |
+      tf=$(mktemp tmp.XXXXX)
+      awk -f /usr/local/sbin/add-ips.awk /etc/sysconfig/network-scripts/ifcfg-{{ lustre_network_devices[0] }} > ${tf}
+      mv ${tf} /etc/sysconfig/network-scripts/ifcfg-{{ lustre_network_devices[0] }}
+      ifdown {{ lustre_network_devices[0] }}
+      ifup {{ lustre_network_devices[0] }}
+      modprobe lustre
+      mount {{ lustre_mount_dir }}
+  when: lustre_lnet_multi_rail|bool
 
 - name: Make sure rc.local is executable
   file:
