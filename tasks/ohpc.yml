@@ -13,7 +13,7 @@
 - name: Run the script from rc.local
   lineinfile:
     path: /etc/rc.d/rc.local
-    line: '/usr/local/sbin/ifcfg-ibpart-create.sh'
+    line: 'timeout 60 /usr/local/sbin/ifcfg-ibpart-create.sh'
   when: lustre_network_ib_partitions|bool
 
 - name: Add network device alias script for Lnet multi-rail
@@ -28,7 +28,7 @@
 - name: Run multi-rail network device alias script from rc.local
   lineinfile:
     path: /etc/rc.d/rc.local
-    line: "/usr/local/sbin/ifcfg-create-alias.sh {{ lustre_network_devices[0] }} {{ lustre_network_ib_aliases }}"
+    line: "timeout 60 /usr/local/sbin/ifcfg-create-alias.sh {{ lustre_network_devices[0] }} {{ lustre_network_ib_aliases }}"
   when: lustre_network_ib_aliases is defined
 
 - name: Make sure rc.local is executable
