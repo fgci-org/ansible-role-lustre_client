@@ -16,27 +16,20 @@
     line: '/usr/local/sbin/ifcfg-ibpart-create.sh'
   when: lustre_network_ib_partitions|bool
 
-- name: Add extra IPs for Lnet multi-rail
+- name: Add network device alias script for Lnet multi-rail
   copy:
-    src: add-ips.awk
-    dest: /usr/local/sbin/add-ips.awk
-    mode: 0644
+    src: ifcfg-create-alias.sh
+    dest: /usr/local/sbin/ifcfg-create-alias.sh
+    mode: 0744
     owner: root
     group: root
-  when: lustre_lnet_multi_rail|bool
+  when: lustre_network_ib_aliases is defined
 
-- name: Run multi-rail setup from rc.local
-  blockinfile:
+- name: Run multi-rail network device alias script from rc.local
+  lineinfile:
     path: /etc/rc.d/rc.local
-    block: |
-      tf=$(mktemp tmp.XXXXX)
-      awk -f /usr/local/sbin/add-ips.awk /etc/sysconfig/network-scripts/ifcfg-{{ lustre_network_devices[0] }} > ${tf}
-      mv ${tf} /etc/sysconfig/network-scripts/ifcfg-{{ lustre_network_devices[0] }}
-      ifdown {{ lustre_network_devices[0] }}
-      ifup {{ lustre_network_devices[0] }}
-      modprobe lustre
-      mount {{ lustre_mount_dir }}
-  when: lustre_lnet_multi_rail|bool
+    line: "/usr/local/sbin/ifcfg-create-alias.sh {{ lustre_network_devices[0] }} {{ lustre_network_ib_aliases }}"
+  when: lustre_network_ib_aliases is defined
 
 - name: Make sure rc.local is executable
   file:
