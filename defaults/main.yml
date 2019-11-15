@@ -6,4 +6,4 @@ lustre_mount_opts: "_netdev,noatime,localflock,noauto"
 lustre_packages: []
 #lustre_network_devices: []
 lustre_network_ib_partitions: False
-lustre_lnet_multi_rail: False
+lustre_network_ib_aliases: False
