@@ -6,4 +6,5 @@ lustre_mount_opts: "_netdev,noatime,localflock,noauto"
 lustre_packages: []
 #lustre_network_devices: []
 lustre_network_ib_partitions: False
-lustre_network_ib_aliases: False
+# To use network aliases, set to e.g.
+# lustre_network_ib_aliases: "2 3"
