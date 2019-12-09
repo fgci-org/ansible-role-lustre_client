@@ -16,6 +16,12 @@
     line: 'timeout 60 /usr/local/sbin/ifcfg-ibpart-create.sh'
   when: lustre_network_ib_partitions|bool
 
+- name: Make sure rc.local is executable
+  file:
+    path: /etc/rc.d/rc.local
+    mode: 0744
+  when: lustre_network_ib_partitions|bool
+
 - name: Add network device alias script for Lnet multi-rail
   copy:
     src: ifcfg-create-alias.sh
@@ -25,13 +31,15 @@
     group: root
   when: lustre_network_ib_aliases is defined
 
-- name: Run multi-rail network device alias script from rc.local
-  lineinfile:
-    path: /etc/rc.d/rc.local
-    line: "timeout 60 /usr/local/sbin/ifcfg-create-alias.sh {{ lustre_network_devices[0] }} {{ lustre_network_ib_aliases }}"
+- name: Install systemd unit file for Lustre mount script
+  template:
+    src: lustre-mount.service.j2
+    dest: /etc/systemd/system/lustre-mount.service
+    mode: 0664
+    owner: root
+    group: root
   when: lustre_network_ib_aliases is defined
 
-- name: Make sure rc.local is executable
-  file:
-    path: /etc/rc.d/rc.local
-    mode: 0744
+- name: Enable Lustre-mount unit
+  command: systemctl enable lustre-mount
+  when: lustre_network_ib_aliases is defined
