@@ -2,7 +2,7 @@
 
 # Warewulf doesn't support network interface aliases (e.g. ib0:1).
 # So create the ifcfg- files and bring up the Lustre networks here
-# instead, and launch from rc.local.
+# instead, and launch from a systemd unit.
 
 parent=$1
 

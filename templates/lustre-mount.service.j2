@@ -1,0 +1,16 @@
+[Unit]
+Description=Setup IB alias ifaces and mount Lustre
+After=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/sbin/ifcfg-create-alias.sh {{ lustre_network_devices[0] }} {{ lustre_network_ib_aliases }}
+ExecStopPost=/usr/bin/umount -at lustre
+ExecStopPost=/usr/sbin/lustre_rmmod
+# Yes, run lustre_rmmod twice
+ExecStopPost=/usr/sbin/lustre_rmmod
+TimeoutSec=60
+
+[Install]
+WantedBy=multi-user.target
