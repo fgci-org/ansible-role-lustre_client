@@ -50,5 +50,6 @@ Version 2.0, January 2004
 
 Author Information
 ------------------
-https://github.com/mhakala
-https://github.com/jabl
+
+- https://github.com/mhakala
+- https://github.com/jabl
