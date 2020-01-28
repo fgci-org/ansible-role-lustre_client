@@ -41,5 +41,7 @@
   when: lustre_network_ib_aliases is defined
 
 - name: Enable Lustre-mount unit
-  command: systemctl enable lustre-mount
+  systemd:
+    name: lustre-mount
+    enable: true
   when: lustre_network_ib_aliases is defined
