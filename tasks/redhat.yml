@@ -8,8 +8,12 @@
     state: present
 
 - name: Lustre modprobe.d confings
-  template: src=lustre.conf.j2 dest=/etc/modprobe.d/lustre.conf
-            owner=root group=root mode=0644
+  template:
+    src: lustre.conf.j2
+    dest: /etc/modprobe.d/lustre.conf
+    owner: root
+    group: root
+    mode: 0644
 
 - name: Check Lustre networks
   command: /usr/sbin/ip link show {{ item }}
@@ -21,18 +25,30 @@
 
 - name: Bring up Lustre networks if down
   command: /usr/sbin/ifup {{ item[1] }}
-  when: item[0].rc != 0
   with_nested:
     - "{{ lustre_networks.results }}"
     - "{{ lustre_network_devices|default([]) }}"
-  when: ansible_connection != 'chroot'
+  when:
+    - item[0].rc != 0
+    - ansible_connection != 'chroot'
 
 - name: Load Lustre modules
-  modprobe: name=lustre
+  modprobe:
+    name: lustre
   when: ansible_connection != 'chroot'
 
 - name: create lustre mount directory
-  file: "path={{ lustre_mount_dir }} state=directory mode={{ lustre_dir_mode }} owner=root group=root"
+  file:
+    path: "{{ lustre_mount_dir }}"
+    state: directory
+    mode: "{{ lustre_dir_mode }}"
+    owner: root
+    group: root
 
 - name: Add Lustre entry to /etc/fstab, make sure it is mounted
-  mount: fstype=lustre name="{{ lustre_mount_dir }}" opts="{{ lustre_mount_opts }}" src="{{ lustre_mount_src }}" state="{{ 'mounted' if ansible_connection != 'chroot' else 'present' }}"
+  mount:
+    fstype: lustre
+    name: "{{ lustre_mount_dir }}"
+    opts: "{{ lustre_mount_opts }}"
+    src: "{{ lustre_mount_src }}"
+    state: "{{ 'mounted' if ansible_connection !: 'chroot' else 'present' }}"
