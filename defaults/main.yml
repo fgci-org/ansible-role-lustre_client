@@ -8,3 +8,6 @@ lustre_packages: []
 lustre_network_ib_partitions: False
 # To use network aliases, set to e.g.
 # lustre_network_ib_aliases: "2 3"
+
+# Comment to not add repository
+lustre_repo_base_url: https://downloads.whamcloud.com/public/lustre/latest-release/el7/client
