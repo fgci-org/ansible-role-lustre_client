@@ -13,6 +13,7 @@
   yum:
     name: "{{ lustre_packages }}"
     state: present
+  when: lustre_packages is defined
 
 - name: Lustre modprobe.d confings
   template:
