@@ -3,3 +3,8 @@
   hosts: all
   roles:
     - role: ansible-lustre_client
+      lustre_mount_state: 'present'
+      lustre_mounts:
+        - { path: "/default",  src: "/opts" }
+        - { path: "/my",  src: "/opts",  opts: ['my_opt'] }
+        - { path: "/merge",  src: "/opts",  opts: "{{ lustre_mount_opts + ['my_opt'] }}" }
