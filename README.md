@@ -16,16 +16,14 @@ Role Variables
 --------------
 ```
 lustre_lnet_networks: (default: none) -  what to put to /etc/modprobe.d/lustre.conf
-lustre_mount_opts:    (default: _netdev,noatime,localflock,noauto) - Lustre mount options
-lustre_mount_src:     (default: none) - Lustre mount source
-lustre_mount_dir:     (default: none) - Path where Lustre will be mounted
-lustre_packages:      (default: none)
-  - <package>
+lustre_mount_opts:    (default: [_netdev,noatime,localflock,noauto]) - Lustre mount options
+lustre_mounts:     (default: none) - Lustre mounts list of `{ path: , src: , opts: [] }`
+lustre_packages:      (default: lustre-client)
+  - lustre-client
 
 lustre_network_devices: (default none) - which network devices should be brought up to make lustre work
   - <network device>
 ```
-lustre_dir_mode: (default 0755) - mode for mount directory
 
 Dependencies
 ------------

@@ -1,6 +1,5 @@
 ---
 # defaults file for ansible-role-lustre_client
-lustre_client_enabled: False
 # lustre_network_devices: []
 lustre_network_ib_partitions: False
 # To use network aliases, set to e.g.
@@ -17,3 +16,5 @@ lustre_mount_state: "{{ 'mounted' if ansible_connection != 'chroot' else 'presen
 
 # Comment to not add repository
 lustre_repo_base_url: https://downloads.whamcloud.com/public/lustre/latest-release/el7/client
+lustre_packages:
+  - lustre-client
