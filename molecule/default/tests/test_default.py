@@ -28,3 +28,10 @@ def test_lustre_mounts(host):
         r'/merge lustre _netdev,noatime,localflock,noauto,my_opt '
     )
     assert host.file(fstab).contains(r'/my lustre my_opt ')
+
+
+def test_lustre_module_options(host):
+    modfile = '/etc/modprobe.d/lustre.conf'
+    assert host.file(modfile).contains(
+        r"networks='tcp2(eth0)' routes='my route' auto_down=1"
+    )

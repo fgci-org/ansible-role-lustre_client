@@ -1,4 +1,11 @@
+{% if lustre_modprobe_options is defined %}
+options lnet
+{%- for key, value in lustre_modprobe_options.items() %}
+ {{ key }}={{ value | quote }}
+{%- endfor -%}
+{% elif  lustre_lnet_networks is defined %}
 options lnet networks="{{ lustre_lnet_networks }}"
+{% endif %}
 {% if modprobe_options_ko2iblnd is defined %}
 options ko2iblnd {{ modprobe_options_ko2iblnd }}
 {% endif %}

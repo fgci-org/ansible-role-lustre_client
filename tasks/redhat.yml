@@ -22,7 +22,7 @@
     owner: root
     group: root
     mode: 0644
-  when: lustre_lnet_networks is defined
+  when: lustre_lnet_networks is defined or lustre_modprobe_options is defined
   notify: lnet service restart
 
 - name: Check Lustre networks
