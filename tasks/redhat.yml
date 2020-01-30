@@ -22,6 +22,7 @@
     owner: root
     group: root
     mode: 0644
+  when: lustre_lnet_networks is defined
 
 - name: Check Lustre networks
   command: /usr/sbin/ip link show {{ item }}
@@ -43,20 +44,17 @@
 - name: Load Lustre modules
   modprobe:
     name: lustre
-  when: ansible_connection != 'chroot'
-
-- name: create lustre mount directory
-  file:
-    path: "{{ lustre_mount_dir }}"
-    state: directory
-    mode: "{{ lustre_dir_mode }}"
-    owner: root
-    group: root
+  when:
+    - ansible_connection != 'chroot'
+    - ansible_connection != 'docker'
+    - lustre_packages is defined
 
 - name: Add Lustre entry to /etc/fstab, make sure it is mounted
   mount:
     fstype: lustre
-    name: "{{ lustre_mount_dir }}"
-    opts: "{{ lustre_mount_opts }}"
-    src: "{{ lustre_mount_src }}"
-    state: "{{ 'mounted' if ansible_connection !: 'chroot' else 'present' }}"
+    path: "{{ item.path }}"
+    src: "{{ item.src }}"
+    opts: "{{ item.opts | default(lustre_mount_opts) | join(',') }}"
+    state: "{{ lustre_mount_state }}"
+  loop: "{{ lustre_mounts }}"
+  when: lustre_mounts is defined

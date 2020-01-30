@@ -1,12 +1,18 @@
 ---
 # defaults file for ansible-role-lustre_client
-lustre_dir_mode: "0755"
-lustre_mount_opts: "_netdev,noatime,localflock,noauto"
-lustre_packages: []
 # lustre_network_devices: []
 lustre_network_ib_partitions: False
 # To use network aliases, set to e.g.
 # lustre_network_ib_aliases: "2 3"
+
+# Default mount options
+lustre_mount_opts: ["_netdev", "noatime", "localflock", "noauto"]
+lustre_mount_state: "{{ 'mounted' if ansible_connection != 'chroot' else 'present' }}"
+# lustre_mounts:
+#  - { path:, src:, opts: [] }
+#  - { path: "/default",  src: "/opts" }
+#  - { path: "/my",  src: "/opts",  opts: ['my_opt'] }
+#  - { path: "/merge",  src: "/opts",  opts: "{{ lustre_mount_opts + ['my_opt'] }}" }
 
 # Comment to not add repository
 lustre_repo_base_url: https://downloads.whamcloud.com/public/lustre/latest-release/el7/client
