@@ -25,6 +25,7 @@
   when: lustre_lnet_networks is defined or lustre_modprobe_options is defined
   notify: lnet service restart
 
+
 - name: Check Lustre networks
   command: /usr/sbin/ip link show {{ item }}
   with_items: "{{ lustre_network_devices|default([]) }}"
