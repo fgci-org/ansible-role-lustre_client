@@ -1,0 +1,7 @@
+- name: lnet service restart
+  systemd:
+    name: lnet
+    state: restarted
+  when:
+    - lustre_enable_service is defined
+    - ansible_connection != 'chroot'

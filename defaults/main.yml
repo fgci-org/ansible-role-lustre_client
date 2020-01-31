@@ -18,3 +18,6 @@ lustre_mount_state: "{{ 'mounted' if ansible_connection != 'chroot' else 'presen
 lustre_repo_base_url: https://downloads.whamcloud.com/public/lustre/latest-release/el7/client
 lustre_packages:
   - lustre-client
+
+# Comment out to load kernel module from lnet service
+# lustre_enable_service: true

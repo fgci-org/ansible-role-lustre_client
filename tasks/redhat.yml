@@ -22,7 +22,9 @@
     owner: root
     group: root
     mode: 0644
-  when: lustre_lnet_networks is defined
+  when: lustre_lnet_networks is defined or lustre_modprobe_options is defined
+  notify: lnet service restart
+
 
 - name: Check Lustre networks
   command: /usr/sbin/ip link show {{ item }}
@@ -47,7 +49,14 @@
   when:
     - ansible_connection != 'chroot'
     - ansible_connection != 'docker'
-    - lustre_packages is defined
+    - lustre_enable_service is not defined
+
+- name: Ensure lnet service is enabled and running
+  systemd:
+    name: lnet
+    state: started
+    enabled: "{{ lustre_enable_service }}"
+  when: lustre_enable_service is defined
 
 - name: Add Lustre entry to /etc/fstab, make sure it is mounted
   mount:
