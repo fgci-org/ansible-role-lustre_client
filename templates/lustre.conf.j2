@@ -1,7 +1,7 @@
 {% if lustre_modprobe_options is defined %}
 options lnet
 {%- for key, value in lustre_modprobe_options.items() %}
- {{ key }}={{ value | quote }}
+ {{ key }}="{{ value }}"
 {%- endfor -%}
 {% elif  lustre_lnet_networks is defined %}
 options lnet networks="{{ lustre_lnet_networks }}"

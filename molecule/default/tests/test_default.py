@@ -33,5 +33,5 @@ def test_lustre_mounts(host):
 def test_lustre_module_options(host):
     modfile = '/etc/modprobe.d/lustre.conf'
     assert host.file(modfile).contains(
-        r"networks='tcp2(eth0)' routes='my route' auto_down=1"
+        r'networks="tcp2(eth0)" routes="my route" auto_down="1"'
     )
