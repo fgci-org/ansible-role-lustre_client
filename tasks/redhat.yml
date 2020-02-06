@@ -40,8 +40,8 @@
     - "{{ lustre_networks.results }}"
     - "{{ lustre_network_devices|default([]) }}"
   when:
-    - item[0].rc != 0
     - ansible_connection != 'chroot'
+    - item[0].rc != 0
 
 - name: Load Lustre modules
   modprobe:

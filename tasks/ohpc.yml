@@ -40,8 +40,14 @@
     group: root
   when: lustre_network_ib_aliases is defined
 
+# This needs dbus, that is not available from chroot
+#- name: Enable Lustre-mount unit
+#  systemd:
+#    name: lustre-mount
+#    enabled: true
+#  when: lustre_network_ib_aliases is defined
+
 - name: Enable Lustre-mount unit
-  systemd:
-    name: lustre-mount
-    enable: true
+  command: systemctl enable lustre-mount
   when: lustre_network_ib_aliases is defined
+
