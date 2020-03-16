@@ -1,0 +1,63 @@
+---
+# tasks file for ansible-role-lustre_client
+
+# Ensure lustre-client apt is present beforehand. Repos managed via separate role
+
+- name: install lustre deps packages
+  yum:
+    name: "{{ lustre_apt_packages }}"
+    state: present
+  when: lustre_apt_packages is defined
+
+- name: Lustre modprobe.d confings
+  template:
+    src: lustre.conf.j2
+    dest: /etc/modprobe.d/lustre.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: lustre_lnet_networks is defined or lustre_modprobe_options is defined
+  notify: lnet service restart
+
+- name: Check Lustre networks
+  command: /usr/sbin/ip link show {{ item }}
+  with_items: "{{ lustre_network_devices|default([]) }}"
+  register: lustre_networks
+  failed_when: False
+  changed_when: lustre_networks.rc != 0
+  when: ansible_connection != 'chroot'
+
+- name: Bring up Lustre networks if down
+  command: /usr/sbin/ifup {{ item[1] }}
+  with_nested:
+    - "{{ lustre_networks.results }}"
+    - "{{ lustre_network_devices|default([]) }}"
+  when:
+    - ansible_connection != 'chroot'
+    - item[0].rc != 0
+
+- name: Load Lustre modules
+  modprobe:
+    name: lustre
+  when:
+    - ansible_connection != 'chroot'
+    - ansible_connection != 'docker'
+    - lustre_enable_service is not defined
+
+- name: Ensure lnet service is enabled and running
+  systemd:
+    name: lnet
+    state: started
+    enabled: "{{ lustre_enable_service }}"
+  when: lustre_enable_service is defined
+
+- name: Add Lustre entry to /etc/fstab, make sure it is mounted
+  mount:
+    fstype: lustre
+    path: "{{ item.path }}"
+    src: "{{ item.src }}"
+    opts: "{{ item.opts | default(lustre_mount_opts) | join(',') }}"
+    state: "{{ lustre_mount_state }}"
+  loop: "{{ lustre_mounts }}"
+  when: lustre_mounts is defined
+
