@@ -6,7 +6,7 @@
 
 parent=$1
 
-parent_ip=$(ip a show dev ${parent} scope global | awk '{if ($1 == "inet") {print $2}}' | awk -F/ '{print $1}')
+parent_ip=$(ip a show dev ${parent} scope global | awk '{if ($1 == "inet") {print $2}}' | awk -F/ '{print $1}' | head -1 )
 
 shift
 while (( "$#" )); do
