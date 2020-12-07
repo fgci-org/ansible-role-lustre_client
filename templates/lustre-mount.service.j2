@@ -10,7 +10,7 @@ ExecStopPost=/usr/bin/umount -at lustre
 ExecStopPost=/usr/sbin/lustre_rmmod
 # Yes, run lustre_rmmod twice
 ExecStopPost=/usr/sbin/lustre_rmmod
-TimeoutSec=60
+TimeoutSec=120
 
 [Install]
 WantedBy=multi-user.target
