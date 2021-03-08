@@ -12,6 +12,7 @@ lustre_mount_state: "{{ 'mounted' if ansible_connection != 'chroot' else 'presen
 #  - { path:, src:, opts: [] }
 #  - { path: "/default",  src: "/opts" }
 #  - { path: "/my",  src: "/opts",  opts: ['my_opt'] }
+#  - { path: "/old", src: "10.2.20.10@o2ib:/lustre", state: "absent"
 #  - { path: "/merge",  src: "/opts",  opts: "{{ lustre_mount_opts + ['my_opt'] }}" }
 
 # Comment to not add repository

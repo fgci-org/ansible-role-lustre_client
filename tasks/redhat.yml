@@ -64,6 +64,6 @@
     path: "{{ item.path }}"
     src: "{{ item.src }}"
     opts: "{{ item.opts | default(lustre_mount_opts) | join(',') }}"
-    state: "{{ lustre_mount_state }}"
+    state: "{{ item.state | default(lustre_mount_state) }}"
   loop: "{{ lustre_mounts }}"
   when: lustre_mounts is defined
